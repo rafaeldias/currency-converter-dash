@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <title>Currency Converter Dash</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+  </head>
+  <body>
+    <div class="container d-flex h-100">
+      <div class="row align-self-center w-100">
+        <div class="col-6 mx-auto">
+          <div class="jumbotron">
+            <h1 class="display-8">Currency Converter</h1>
+            <form>
+              <div class="form-row">
+                <div class="form-group col-md-8">
+                  <input id="from"  type="text" class="form-control" placeholder="From">
+                </div>
+                <div class="form-group cool-md-4">
+                  <select id="fromCurrencies" class="form-control">
+                    <option value="USD">United States</option>
+                  </select>
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group col-md-8">
+                  <input id="to"  type="text" class="form-control" placeholder="To">
+                </div>
+                <div class="form-group cool-md-4">
+                  <select id="toCurrencies" class="form-control">
+                    <option value="USD">United States</option>
+                  </select>
+                </div>
+              </div>
+              <p class="lead text-center">
+                <a class="btn btn-primary btn-lg" href="#" role="button">Convert</a>
+              </p>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="http://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+    <script>
+      (function($){
+        // Load list of currencies
+        $.ajax({
+          url: ":9000/currencies",
+          crossDomain: true
+        })
+          .done(function( data ) {
+            console.log(data);
+          });
+      })(jQuery)
+    </script>
+  </body>
+</html>
