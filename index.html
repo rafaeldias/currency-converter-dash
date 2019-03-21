@@ -10,33 +10,39 @@
   <body>
     <div class="container d-flex h-100">
       <div class="row align-self-center w-100">
-        <div class="col-6 mx-auto">
+        <div class="col-8 mx-auto">
           <div class="jumbotron">
             <h1 class="display-8">Currency Converter</h1>
             <form>
               <div class="form-row">
-                <div class="form-group col-md-8">
+                <div class="form-group col-md-6">
                   <input id="from"  type="text" class="form-control" placeholder="From">
                 </div>
-                <div class="form-group cool-md-4">
+                <div class="form-group cool-md-6">
                   <select id="fromCurrencies" class="form-control">
                     <option value="USD">United States</option>
                   </select>
                 </div>
               </div>
               <div class="form-row">
-                <div class="form-group col-md-8">
+                <div class="form-group col-md-6">
                   <input id="to"  type="text" class="form-control" placeholder="To">
                 </div>
-                <div class="form-group cool-md-4">
+                <div class="form-group cool-md-6">
                   <select id="toCurrencies" class="form-control">
                     <option value="USD">United States</option>
                   </select>
                 </div>
               </div>
               <p class="lead text-center">
-                <a class="btn btn-primary btn-lg" href="#" role="button">Convert</a>
+                <a id="convert" class="btn btn-primary btn-lg" href="#" role="button">Convert</a>
               </p>
+              <div class="alert alert-danger alert-dismissible d-none">
+                <p id="alert-content"></p>
+                <button type="button" class="close" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+                </button>
+              </div>
             </form>
           </div>
         </div>
@@ -48,13 +54,66 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
     <script>
       (function($){
+        var from = 'BRL'
+          , to = 'USD'
+          , $from = $("#from")
+          , $to = $("#to")
+          , $fromCurrencies = $("#fromCurrencies")
+              .on("change", function() {
+                from = this.value;
+              })
+          , $toCurrencies = $("#toCurrencies")
+              .on("change", function() {
+                to = this.value;
+              })
+          , $convert = $("#convert")
+              .on("click", function(e) {
+                e.preventDefault();
+                $.ajax({
+                  url: "https://glacial-cliffs-90148.herokuapp.com/currencies/" + from + "/conversions/" + to, 
+                  data: {value: $from.val()},
+                  crossDomain: true
+                })
+                  .done(function( data ) {
+                    $to.val(data.result)
+                  })
+                    .fail(function(jqXHR, textStatus, errorThrown) {
+                      var err
+                      try {
+                        err = JSON.parse(jqXHR.responseText).message
+                      } catch(e) {
+                        err = errorThrown
+                      }
+
+                      $("#alert-content").html(err)
+                      $alert.removeClass("d-none")
+                    });
+              })
+          , $alert = $(".alert")
+          , $close = $(".close", $alert).on("click", function(e) {
+              e.preventDefault()
+              $alert.addClass("d-none")
+            })
+        
         // Load list of currencies
         $.ajax({
-          url: ":9000/currencies",
+          url: "https://glacial-cliffs-90148.herokuapp.com/currencies",
           crossDomain: true
         })
           .done(function( data ) {
-            console.log(data);
+            $.each(data.currencies, function(key, value) {
+              $fromCurrencies
+                .append($("<option></option>")
+                  .attr("value", key)
+                  .attr("selected", key == from)
+                    .text(value))
+
+              $toCurrencies
+                .append($("<option></option>")
+                  .attr("value", key)
+                  .attr("selected", key == to)
+                    .text(value))
+            });
           });
       })(jQuery)
     </script>
